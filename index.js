@@ -20,7 +20,7 @@ client.on ("message", message =>
 
     if (command === "help")
     {
-        const embed = new Discord.RichEmbed()
+        const embed = new Discord.RichEmbed ()
         .setColor ("#0099ff")
         .setTitle ("ClassBot")
         .setDescription ("Un bot qui aide à gérer les cours sur discord \n\n **Prefix** : c! \n")
