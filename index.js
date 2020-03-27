@@ -9,8 +9,6 @@ client.once('ready', () => {
 const aideimg = ['https://cdn.pixabay.com/photo/2012/04/23/15/46/question-38629_640.png']
 const questionimg = ['https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Question_book.svg/252px-Question_book.svg.png']
 
-const identifiant = ['142618759541030913']
-
 client.on('message', message => {
     if (!message.content.startsWith(prefix) || message.author.bot) return;
 
@@ -64,7 +62,7 @@ client.on('message', message => {
 
 								message.edit("▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 100%");
 
-            		message.delete();
+            							message.delete();
 
 								message.channel.send("**Les élèves absent sont :**");
 								message.guild.members.forEach((member) => {
