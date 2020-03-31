@@ -44,7 +44,7 @@ client.on ("message", message =>
             .addField ("• **appel** (ou **ap**)", "*Pour faire l'appel*")
             .addField ("• **--** (ou **-**)", "*---*")
             .setFooter ("by Paul & Stéfan");
-        message.channel.send (embed)
+        message.channel.sendEmbed (embed);
     }
     else if (command === "q" || command === "question")
     {
@@ -55,7 +55,7 @@ client.on ("message", message =>
             .setThumbnail (`${questionimg}`)
             .setDescription ("**Avez-vous des questions?**")
             .setFooter (`Par ${message.author.username}`);
-        message.channel.send (question);
+        message.channel.sendEmbed (question);
     }
     else if (command === "aide" || command === "a")
     {
@@ -66,10 +66,11 @@ client.on ("message", message =>
             .setThumbnail (`${aideimg}`)
             .setDescription ("J'ai besoin d'aide !")
             .setFooter (`Par ${message.author.username}`);
-        message.channel.send (question);
+        message.channel.sendEmbed (question);
     }
     else if (command === "appel" || command === "ap")
     {
+        message.delete ();
         makeCall (message, args);
     }
 });
@@ -101,7 +102,7 @@ function makeCall (message, args)
     let now = new Date ();
     let timeString = now.getHours() + ":" + now.getMinutes () + ":" + now.getSeconds();
 
-    message.channel.send ("Je fais l'appel...");
+    message.channel.send ("Je fais l'appel du cours de " + className + "...");
 
     let totalPupils = 0;
     let connectedPupils = 0;
@@ -111,6 +112,7 @@ function makeCall (message, args)
     {
         if (member.roles.find ((role) => role.name === pupilRoleName))
         {
+            let memberName = member.nickname;
             totalPupils += 1;
 
             if (member.voiceChannel === message.member.voiceChannel)
@@ -118,21 +120,21 @@ function makeCall (message, args)
                 connectedPupils += 1;
                 presentPupils += 1;
             }
-            else if (member.user.presence.status === "online")
+            else if (member.user.presence.status !== "offline")
             {
-                message.channel.send (member.user.username + " est connecté, mais n'est pas présent dans le salon vocal...")
-                member.send ("Absence au cours de " + className + " à " + timeString + ". Vous êtes pourtant connecté...").catch (console.log);
+                message.channel.send (memberName + " est connecté, mais n'est pas présent dans le salon vocal...")
+                member.send ("Absence au cours de " + className + " à " + timeString + ". Vous êtes pourtant connecté...").catch (() => { message.channel.send ("Je n'ai pas pu contacter " + memberName); });
                 connectedPupils += 1;
             }
             else
             {
-                message.channel.send (member.user.username + " n'est pas connecté...");
-                member.send ("Absence au cours de " + className + " de " + timeString).catch (console.log);
+                message.channel.send (memberName + " n'est pas connecté...");
+                member.send ("Absence au cours de " + className + " de " + timeString).catch (() => { message.channel.send ("Je n'ai pas pu contacter " + memberName); });
             }
         }
     });
 
-    message.channel.send ("Appel terminé. Il y a " + totalPupils + " élèves sur ce serveur, " + connectedPupils + " sont connectés, " + presentPupils + " sont présents.");
+    message.channel.send ("Appel terminé. Il y a " + totalPupils + " élèves sur ce serveur, " + connectedPupils + " sont connectés, " + (totalPupils - presentPupils) + " sont absents.");
     
     if (presentPupils == totalPupils)
     {
